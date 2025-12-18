@@ -403,6 +403,79 @@ blockquote {
     margin-top: 0;
 }
 
+.result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.result-item h3 {
+    margin-top: 0;
+}
+
+.result-text {
+    flex: none;
+}
+
+.result-figure {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.result-figure img {
+    width: 100%;
+    max-width: 920px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.result-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 15px;
+    grid-template-areas:
+        "vs_text t2i_text"
+        "vs_fig  t2i_fig";
+}
+
+.result-grid-2 .vs-text {
+    grid-area: vs_text;
+}
+
+.result-grid-2 .t2i-text {
+    grid-area: t2i_text;
+}
+
+.result-grid-2 .vs-fig {
+    grid-area: vs_fig;
+}
+
+.result-grid-2 .t2i-fig {
+    grid-area: t2i_fig;
+}
+
+.result-grid-2 .result-figure img {
+    max-width: 100%;
+}
+
+@media screen and (max-width: 700px) {
+    .result-figure {
+        width: 100%;
+    }
+    .result-grid-2 {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "vs_text"
+            "vs_fig"
+            "t2i_text"
+            "t2i_fig";
+    }
+}
+
 </style>
 
 <script type="text/javascript" src="../js/hidebib.js"></script>
@@ -462,6 +535,10 @@ blockquote {
         </div>
     </div>
 
+    <div class="figure">
+        <img src="performance.png" alt="Performance overview">
+    </div>
+
     <section>
         <h2>Overview</h2>
         <hr>
@@ -493,12 +570,36 @@ blockquote {
     </section>
 
 
-    <section>
-        <h2>Results</h2>
-        <hr>
-        <p>We validate the effectiveness of the MixFlow training by improvements over class-conditional generation and text-to-image generation models and comparison to methods to exposure bias alleviation. We post-train the prior SOTA class-conditional generation models that are from the officially-released models at GitHub, including SiT with linear and variance-preserving interpolations, REPA, and RAE. We follow the training settings, including learning rate, batch size, which are used in the official implementation for each model.</p>
-        <p>The gains from MixFlow become greater for fewer sampling steps. The reason is that the <em>Slow Flow</em> issue is more pronounced for fewer sampling steps, where the sampler approximation is coarser and the training and testing difference is larger. MixFlow improves the performance across model scales and sampling steps, enhancing the gFID scores for generation without and with guidance and showing that MixFlow is applicable to diffusion models with variance preserving interpolations besides linear interpolations.</p>
-    </section>
+	    <section>
+	        <h2>Results</h2>
+	        <hr>
+	        <div class="result-item">
+	            <div class="result-text">
+	                <h3>Class-conditional image generation</h3>
+	                <p>Post-training prior SOTA class-conditional models (SiT, REPA, RAE) with MixFlow improves ImageNet gFID to 1.43 (no guidance) and 1.10 (with guidance) at 256 x 256, and 1.55 / 1.10 at 512 x 512.</p>
+	            </div>
+	            <div class="result-figure">
+	                <img src="sota_result.png" alt="Class-conditional image generation results">
+	            </div>
+		        </div>
+
+		        <div class="result-grid-2">
+		            <div class="result-text vs-text">
+		                <h3>Various sampling steps</h3>
+		                <p>MixFlow yields larger gains when sampling steps are small, where <em>Slow Flow</em> is more pronounced and sampler approximation is coarser, reducing the training-testing discrepancy.</p>
+		            </div>
+		            <div class="result-text t2i-text">
+		                <h3>Text-to-image generation</h3>
+		                <p>Applying MixFlow to text-to-image diffusion models also boosts generation quality, showing the slowed-interpolation training generalizes beyond class-conditional settings.</p>
+		            </div>
+		            <div class="result-figure vs-fig">
+		                <img src="various_steps.png" alt="Results across various sampling steps">
+		            </div>
+		            <div class="result-figure t2i-fig">
+		                <img src="t2i_res.png" alt="Text-to-image generation results">
+		            </div>
+		        </div>
+		    </section>
 
     <section id="bibtex">
         <h2>Citation</h2>
