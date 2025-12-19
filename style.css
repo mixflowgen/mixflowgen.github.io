@@ -133,7 +133,7 @@ video {
 
 .byline-container {
   max-width: var(--page-max-width);
-  margin: 0 auto;
+  margin: 0;
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
@@ -165,7 +165,7 @@ video {
 
 .page {
   max-width: var(--page-max-width);
-  margin: 0 auto;
+  margin: 0;
   padding: 26px 18px 70px;
   display: grid;
   grid-template-columns: 1fr;
@@ -418,7 +418,7 @@ figure {
 @media (min-width: 980px) {
   .page {
     grid-template-columns: var(--toc-width) 1fr;
-    gap: 34px;
+    gap: 22px;
     align-items: start;
   }
 
@@ -429,11 +429,11 @@ figure {
     border: none;
     border-right: 1px solid var(--border);
     border-radius: 0;
-    padding: 0 18px 0 0;
+    padding: 0 12px 0 0;
   }
 
   .content {
-    padding-left: 10px;
+    padding-left: 0;
   }
 
   .slow-flow,
