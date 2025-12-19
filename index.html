@@ -69,9 +69,9 @@
       <aside class="toc" aria-label="Contents">
         <h4>Contents</h4>
         <a href="#overview">Overview</a>
-        <a href="#slow-flow">Slow Flow phenomenon</a>
+        <a href="#slow-flow">Slow Flow Phenomenon</a>
         <a href="#mixflow">MixFlow</a>
-        <a href="#code-compare">Code Comparison</a>
+        <a href="#code-compare">Easy Implementation</a>
         <a href="#results">Results</a>
         <a href="#citation">Citation</a>
       </aside>
@@ -119,60 +119,62 @@
         </section>
 
         <section id="code-compare" class="code-compare">
-          <h2>Code Comparison</h2>
+          <h2>Easy Implementation</h2>
           <p>
-            Side-by-side comparison of the RAE implementation and our MixFlow modifications. Highlighted lines indicate the changed logic.
+            <strong>Only 5 lines of code are modified</strong> to integrate MixFlow into the RAE implementation. Concretely, we update two functions in
+            <a href="https://github.com/bytetriper/RAE/blob/main/src/stage2/transport/transport.py">transport.py</a>.
+            Left: RAE; Right: MixFlow + RAE.
           </p>
 
           <div class="code-compare-group">
-            <h3>Sample function comparison</h3>
-            <div class="code-compare-row" role="group" aria-label="Sample function comparison">
+            <h3>Sample function</h3>
+            <div class="code-compare-row" role="group" aria-label="Sample function (RAE | MixFlow + RAE)">
               <div class="code-panel">
                 <div class="code-panel-title">(a) RAE</div>
                 <pre><code data-lang="python">def sample(self, x1):
-        &quot;&quot;&quot;Sampling x0 &amp; t based on shape of x1 (if needed)
-          Args:
-            x1 - data point; [batch, *dim]
-        &quot;&quot;&quot;
-        
-        x0 = th.randn_like(x1)
-        dist_options = self.time_dist_type.split(&quot;_&quot;)
-        t0, t1 = self.check_interval(self.train_eps, self.sample_eps)
-        if dist_options[0] == &quot;uniform&quot;:
-            t = th.rand((x1.shape[0],)) * (t1 - t0) + t0
-        # ...
+    &quot;&quot;&quot;Sampling x0 &amp; t based on shape of x1 (if needed)
+      Args:
+        x1 - data point; [batch, *dim]
+    &quot;&quot;&quot;
+    
+    x0 = th.randn_like(x1)
+    dist_options = self.time_dist_type.split(&quot;_&quot;)
+    t0, t1 = self.check_interval(self.train_eps, self.sample_eps)
+    if dist_options[0] == &quot;uniform&quot;:
+        t = th.rand((x1.shape[0],)) * (t1 - t0) + t0
+    # ...
 
 
-        t = t.to(x1)
-        t = self.time_dist_shift * t / (1 + (self.time_dist_shift - 1) * t)
-        return t, x0, x1</code></pre>
+    t = t.to(x1)
+    t = self.time_dist_shift * t / (1 + (self.time_dist_shift - 1) * t)
+    return t, x0, x1</code></pre>
               </div>
               <div class="code-panel">
                 <div class="code-panel-title">(b) MixFlow</div>
                 <pre><code data-lang="python" data-hl-contains="t = 1 - th.sqrt(t)">def sample(self, x1):
-        &quot;&quot;&quot;Sampling x0 &amp; t based on shape of x1 (if needed)
-          Args:
-            x1 - data point; [batch, *dim]
-        &quot;&quot;&quot;
-        
-        x0 = th.randn_like(x1)
-        dist_options = self.time_dist_type.split(&quot;_&quot;)
-        t0, t1 = self.check_interval(self.train_eps, self.sample_eps)
-        if dist_options[0] == &quot;uniform&quot;:
-            t = th.rand((x1.shape[0],)) * (t1 - t0) + t0
-        # ...
-        # Sample t from Beta(2,1)
-        t = 1 - th.sqrt(t) 
-        t = t.to(x1)
-        t = self.time_dist_shift * t / (1 + (self.time_dist_shift - 1) * t)
-        return t, x0, x1</code></pre>
+    &quot;&quot;&quot;Sampling x0 &amp; t based on shape of x1 (if needed)
+      Args:
+        x1 - data point; [batch, *dim]
+    &quot;&quot;&quot;
+    
+    x0 = th.randn_like(x1)
+    dist_options = self.time_dist_type.split(&quot;_&quot;)
+    t0, t1 = self.check_interval(self.train_eps, self.sample_eps)
+    if dist_options[0] == &quot;uniform&quot;:
+        t = th.rand((x1.shape[0],)) * (t1 - t0) + t0
+    # ...
+    # Sample t from Beta(2,1)
+    t = 1 - th.sqrt(t) 
+    t = t.to(x1)
+    t = self.time_dist_shift * t / (1 + (self.time_dist_shift - 1) * t)
+    return t, x0, x1</code></pre>
               </div>
             </div>
           </div>
 
           <div class="code-compare-group">
-            <h3>Training Losses function comparison</h3>
-            <div class="code-compare-row" role="group" aria-label="Training Losses function comparison">
+            <h3>Training Losses function</h3>
+            <div class="code-compare-row" role="group" aria-label="Training Losses function (RAE | MixFlow + RAE)">
               <div class="code-panel">
                 <div class="code-panel-title">(c) RAE</div>
                 <pre><code data-lang="python">def training_losses(self, model,  x1, model_kwargs=None):
@@ -238,10 +240,6 @@
     return terms</code></pre>
               </div>
             </div>
-          </div>
-
-          <div class="code-compare-note">
-            <strong>Only 5 lines of code are modified for the RAE implementation.</strong>
           </div>
         </section>
 
