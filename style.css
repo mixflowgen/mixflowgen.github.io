@@ -298,6 +298,17 @@ pre {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 0, 0.12);
 }
 
+@media (max-width: 640px) {
+  pre {
+    white-space: pre-wrap;
+  }
+
+  .code-compare .code-line {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
+
 .code-compare .tok.kw {
   color: #0550ae;
   font-weight: 650;
